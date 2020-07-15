@@ -2,7 +2,7 @@
 #include "I2C_AHT10.h"
 #include <Wire.h>
 
-#define NODENAME "soil1"
+#define NODENAME "soil2"
 
 AHT10 humiditySensor;
 
@@ -29,7 +29,6 @@ SX1278 radio = new Module(LORA_CS, DIO0, LORA_RST, DIO1, SPI, SPISettings());
 // https://github.com/jgromes/RadioShield
 //SX1278 radio = RadioShield.ModuleA;
 
-
 void setup()
 {
     Serial.begin(115200);
@@ -51,7 +50,7 @@ void setup()
     }
 
     pinMode(sensorPowerCtrlPin, OUTPUT);
-    sensorPowerOn();
+    digitalWrite(sensorPowerCtrlPin, HIGH); //Sensor power on
 
     Wire.begin();
     if (humiditySensor.begin() == false)
@@ -88,41 +87,35 @@ void loop()
             Serial.print(F("[SX1278] Frequency error:\t"));
             Serial.print(radio.getFrequencyError());
             Serial.println(F(" Hz"));
-            if (str.startsWith(NODENAME))
+            if (str.startsWith("PREPARE"))
             {
-                delay(100);
-                sensorPowerOn();
-                delay(100);
-                sensorValue = analogRead(sensorPin);
-                delay(200);
-
-                if (humiditySensor.available() == true)
+                int i = 0;
+                for (i = 0; i < 5; i++)
                 {
-                    temperature = humiditySensor.getTemperature();
-                    humidity = humiditySensor.getHumidity();
+                    sensorValue = analogRead(sensorPin);
+                    delay(200);
 
-                    Serial.print("Temperature: ");
-                    Serial.print(temperature, 2);
-                    Serial.print(" C\t");
-                    Serial.print("Humidity: ");
-                    Serial.print(humidity, 2);
-                    Serial.println("% RH");
+                    if (humiditySensor.available() == true)
+                    {
+                        temperature = humiditySensor.getTemperature();
+                        humidity = humiditySensor.getHumidity();
+                    }
+                    if (isnan(humidity) || isnan(temperature))
+                    {
+                        Serial.println(F("Failed to read from AHT sensor!"));
+                    }
                 }
-                else
-                {
-                    radio.transmit("AHT10ERR ADC:" + (String)sensorValue);
-                    break;
-                }
-                if (isnan(humidity) || isnan(temperature))
-                {
-                    Serial.println(F("Failed to read from AHT sensor!"));
-                }
-
-                delay(100);
-
+                Serial.print("Temperature: ");
+                Serial.print(temperature, 2);
+                Serial.print(" C\t");
+                Serial.print("Humidity: ");
+                Serial.print(humidity, 2);
+                Serial.println("% RH");
                 Serial.print(F("Moisture ADC : "));
                 Serial.println(sensorValue);
-
+            }
+            if (str.startsWith(NODENAME))
+            {
                 String message = "#" + (String)packetnum + " Humidity:" + (String)humidity + "% Temperature:" + (String)temperature + "C" + " ADC:" + (String)sensorValue;
                 Serial.println(message);
                 String lora_msg = "H:" + (String)humidity + "% T:" + (String)temperature + "C" + " ADC:" + (String)sensorValue;
@@ -131,9 +124,4 @@ void loop()
             }
         }
     }
-}
-
-void sensorPowerOn(void)
-{
-    digitalWrite(sensorPowerCtrlPin, HIGH); //Sensor power on
 }

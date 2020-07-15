@@ -47,7 +47,7 @@ class Lora_Gate:
             ntptime.settime()
         except:
             self.lora.show_text_wrap('NTP time wrong , please reboot.')
-        self.sendMessage("Empty")
+        self.sendMessage("BEGIAN")
         onoff = "OFF"
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind(('', 80))
@@ -71,6 +71,9 @@ class Lora_Gate:
                 print(time_str)
 
                 #Relay收发
+                self.sendMessage("PREPARE")
+                time.sleep(5)
+
                 last_node_status = {"relay":"NULL", "soil1":"NULL", "soil2": "NULL", "soil0":"NULL", "update_time":"NULL"}
                 last_node_status["update_time"] = time_str
 
@@ -101,7 +104,7 @@ class Lora_Gate:
                 self.show_all_status(self.node_list)         
 
                 #阻塞lora，等待webserver请求
-                self.sendMessage("Empty")
+                self.sendMessage("OVER")
                 print("Prepare accept")
 
             while True :
