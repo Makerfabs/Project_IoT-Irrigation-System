@@ -8,6 +8,8 @@ try:
   import usocket as socket
 except:
   import socket
+import ntptime
+
  
 class Lora_Gate:
 
@@ -40,68 +42,107 @@ class Lora_Gate:
 
     #网关模式
     def gate_working(self):
+        #获取时间
+        try:
+            ntptime.settime()
+        except:
+            self.lora.show_text_wrap('NTP time wrong , please reboot.')
         self.sendMessage("Empty")
         onoff = "OFF"
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind(('', 80))
         s.listen(5)
         #设置accept阻塞时间
-        s.settimeout(30)
-        
+        s.settimeout(600)
+        last_time = 0
+        relay_common = 0
+
         while True:
-            #Relay收发
-            last_node_status = {"relay":"NULL", "soil1":"NULL", "soil2": "NULL", "soil0":"NULL", "update_time":"NULL"}
+            now_time = time.time()
+            if now_time - last_time > 60 or relay_common == 1:
+                last_time = now_time
+                relay_common = 0
 
-            temp_msg = "RELAY" + onoff
-            self.sendMessage(temp_msg)
-            self.lora.receive()
-            self.lora_timeout()
-            self.relay_status = str(self.buff)
-            last_node_status["relay"] = self.relay_status
-            if last_node_status["relay"] == "":
-                last_node_status["relay"] = "NULL"
+                tm = time.localtime()
+                t_hour = (tm[3] + 8) % 24
+                t_min = tm[4]
+                t_sec = tm[5]
+                time_str = str(t_hour) + ':' + str(t_min) + ':' + str(t_sec)
+                print(time_str)
 
-            for i in range(3):
-                soil_index = 'soil'+str(i)
-                self.sendMessage(soil_index)
+                #Relay收发
+                last_node_status = {"relay":"NULL", "soil1":"NULL", "soil2": "NULL", "soil0":"NULL", "update_time":"NULL"}
+                last_node_status["update_time"] = time_str
+
+                temp_msg = "RELAY" + onoff
+                onoff = ""
+                self.sendMessage(temp_msg)
                 self.lora.receive()
                 self.lora_timeout()
-                last_node_status[soil_index] = str(self.buff)
-                if last_node_status[soil_index] == "":
-                    last_node_status[soil_index] = "NULL"
+                self.relay_status = self.buff
+                self.buff = ""
+                last_node_status["relay"] = self.relay_status
+                if last_node_status["relay"] == "":
+                    last_node_status["relay"] = "NULL"
 
-            del self.node_list.list[0]
-            self.node_list.list.append(last_node_status)
+                for i in range(3):
+                    soil_index = 'soil'+str(i)
+                    self.sendMessage(soil_index)
+                    self.lora.receive()
+                    self.lora_timeout()
+                    last_node_status[soil_index] = self.buff
+                    self.buff = ""
+                    if last_node_status[soil_index] == "":
+                        last_node_status[soil_index] = "NULL"
 
-            self.show_all_status(self.node_list)         
-            
-            #阻塞lora，等待webserver请求
-            self.sendMessage("Empty")
-            print("Prepare accept")
-            try:
-                conn, addr = s.accept()
-                print('Got a connection from %s' % str(addr))
-                request = conn.recv(1024)
-                request = str(request)
-                print('Content = %s' % request)
+                del self.node_list.list[0]
+                self.node_list.list.append(last_node_status)
 
-                #解析请求并发送控制继电器指令
-                led_on = request.find('/?led=on')
-                led_off = request.find('/?led=off')
-                if led_on == 6:
-                    print('LED ON')
-                    onoff = 'ON'
-                if led_off == 6:
-                    print('LED OFF')
-                    onoff = 'OFF'
-                response = webserver.web_page(self.relay_status)
-                conn.send('HTTP/1.1 200 OK\n')
-                conn.send('Content-Type: text/html\n')
-                conn.send('Connection: close\n\n')
-                conn.sendall(response)
-                conn.close()
-            except Exception as e:
-                print(e)
+                self.show_all_status(self.node_list)         
+
+                #阻塞lora，等待webserver请求
+                self.sendMessage("Empty")
+                print("Prepare accept")
+
+            while True :
+                try:
+                    conn, addr = s.accept()
+                    print('Got a connection from %s' % str(addr))
+                    request = conn.recv(1024)
+                    request = str(request)
+                    print('Content = %s' % request)
+                    if request.find("favicon") != -1:
+                        conn.close()
+                        continue
+                    if request is "":
+                        conn.close()
+                        continue
+
+                    #解析请求并发送控制继电器指令
+                    led_on = request.find('/?led=on')
+                    led_off = request.find('/?led=off')
+                    led_water = request.find('/?led=water')
+                    if led_on == 6:
+                        print('RELAY ON')
+                        onoff = 'ON'
+                        relay_common = 1
+                    if led_off == 6:
+                        print('RELAY OFF')
+                        onoff = 'OFF'
+                        relay_common = 1
+                    if led_water == 6:
+                        print('RELAY WATER')
+                        onoff = 'WATER'
+                        relay_common = 1
+                    response = webserver.web_page(self.node_list.list)
+                    conn.send('HTTP/1.1 200 OK\n')
+                    conn.send('Content-Type: text/html\n')
+                    conn.send('Connection: close\n\n')
+                    conn.sendall(response)
+                    conn.close()
+                    break
+                except Exception as e:
+                    print(e)
 
 
     #网关模式回调
@@ -136,10 +177,31 @@ class Lora_Gate:
 
     def show_all_status(self,node_List):
         self.lora.show_text(self.ip)
+
+        soil0 = node_List.list[9]['soil0']
+        if soil0 == "AHT10ERR" :
+            pass
+        elif soil0 != "NULL" :
+            soil0 = soil0[soil0.find('ADC'):]
+
+
+        soil1 = node_List.list[9]['soil1']
+        if soil1 == "AHT10ERR" :
+            pass
+        elif soil1 != "NULL" :
+            soil1 = soil1[soil1.find('ADC'):]
+
+
+        soil2 = node_List.list[9]['soil2']
+        if soil2 == "AHT10ERR" :
+            pass
+        elif soil2 != "NULL" :
+            soil2 = soil2[soil2.find('ADC'):]
+
         self.lora.show_text('relay:'+ node_List.list[9]['relay'],0,10,clear_first = False)
-        self.lora.show_text('soil0:'+ node_List.list[9]['soil0'],0,20,clear_first = False)
-        self.lora.show_text('soil1:'+ node_List.list[9]['soil1'],0,30,clear_first = False)
-        self.lora.show_text('soil2:'+ node_List.list[9]['soil2'],0,40,clear_first = False)
+        self.lora.show_text('soil0:'+ soil0,0,20,clear_first = False)
+        self.lora.show_text('soil1:'+ soil1,0,30,clear_first = False)
+        self.lora.show_text('soil2:'+ soil2,0,40,clear_first = False)
         self.lora.show_text(node_List.list[9]['update_time'],0,50,clear_first = False, show_now = True, hold_seconds = 1)
 
 class Lora_Node_List:
@@ -147,4 +209,3 @@ class Lora_Node_List:
         self.list = []
         for i in range(10):
             self.list.append({"relay":"UNKNOW", "soil0":"1", "soil1": "2", "soil2":"3", "update_time":"16:32:00"})
-

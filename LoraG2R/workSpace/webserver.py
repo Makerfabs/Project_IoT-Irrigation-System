@@ -20,18 +20,30 @@ led = Pin(5, Pin.OUT)
 ip = "ip get wrong"
 
 def web_page(msg):
+  table_str = """<table border="1"><tr><th>update_time</th><th>relay</th><th style="color:green">soil0</th><th style="color:green">soil1</th><th style="color:green">soil2</th></tr>"""
+  for i in range(10):
+    table_str += "<tr><th>" + msg[i]['update_time'] + "</th><th>" + msg[i]['relay'] + """</th><th style="color:green">""" + msg[i]['soil0'] + """</th><th style="color:green">""" + msg[i]['soil1'] + """</th><th style="color:green">""" + msg[i]['soil2'] + "</th></tr>"
+  table_str += """</table>"""
+
   html ="""
   <html>
-    <head><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="refresh" content="120"/></head>
+    <head><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="refresh" content="600"/></head>
     <body>
       <img src="https://makerfabs.com/image/cache/logo11-190x63.png" />
       <h1>Lora Relay</h1>
-      <h2>Lora Relay status:""" + str(msg) + """</h2>
+      <h2>Sensors status:</h2>
+      """ + table_str + """
       <a href=\"?led=on\">
         <button style="background-color: #7ED321">RELAY ON</button>
       </a>
+      <a href=\"?led=water\">
+        <button style="background-color: #7ED321">WATER</button>
+      </a>
       <a href=\"?led=off\">
         <button style="background-color: #FFFFFF">RELAY OFF</button>
+      </a>
+      <a href=\"?led=donothing\">
+        <button style="background-color: #FFFFFF">Fresh</button>
       </a>
     </body>
   </html>
@@ -66,6 +78,7 @@ def connect():
  do_connect(SSID,PASSWORD)
  global ip
  return ip
+
 
 
 
