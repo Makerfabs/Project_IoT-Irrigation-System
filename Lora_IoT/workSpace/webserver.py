@@ -30,7 +30,7 @@ def web_page(msg):
     <head><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="refresh" content="600"/></head>
     <body>
       <img src="https://makerfabs.com/image/cache/logo11-190x63.png" />
-      <h1>Lora Relay</h1>
+      <h1>Lora IoT Irrigation System</h1>
       <h2>Sensors status:</h2>
       """ + table_str + """
       <a href=\"?led=on\">
@@ -78,6 +78,7 @@ def connect():
  do_connect(SSID,PASSWORD)
  global ip
  return ip
+
 
 
 

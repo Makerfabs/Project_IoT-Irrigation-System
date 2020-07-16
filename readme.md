@@ -9,7 +9,7 @@ Note:
 */
 ```
 
-![main]()
+![main](md_pic\main.jpg)
 
 [toc]
 
@@ -30,7 +30,7 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 - [MakePython ESP32](https://www.makerfabs.com/wiki/index.php?title=MakePython_ESP32)
 - [MakaPython Lora](https://www.makerfabs.com/wiki/index.php?title=MakaPython_Lora)
 -  [Lora Relay](https://www.makerfabs.com/wiki/index.php?title=Lora_Relay)
--  soil
+-  [Lora Soil Moisture Sensor](https://www.makerfabs.com/wiki/index.php？title=Lora_Soil_Moisture_Sensor)
 -  CP2104 USB2UART Module
 
 # DOWNLOAD CODE
@@ -52,11 +52,11 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 
 - Download all python programs ending in.py from the "/Project_LOT-Irrigation-System/LoraLOT/workSpace to ESP32".
 
-![program_list]()
+![program_list](md_pic\program_list.jpg)
 
 - Press the RST button on ESP32 to reset the development board.The LCD screen will display some default data.
 
-![default_data]()
+![default_data](E:\code\Project_IoT-Irrigation-System\md_pic\default_data.jpg)
 
 
 ## Burn Sensor
@@ -71,7 +71,7 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 - Change NODECODE to either soil0, soil1, or soil2.
 
 ```c++
-#define NODENAME "soil3"
+#define NODENAME "soil3" //soil0, soil1, or soil2.
 ```
 
 - After saving, select "Tools", select "Development Board" Arduino Pro or Pro min, select processor ATmega328p 3.3V 8MHz, and select corresponding serial port.
@@ -96,7 +96,7 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 - Choice relay port.
 - Push Upload.
 
-# CONTROL
+# TRY TO USE
 
 ## Web Control
 
@@ -104,15 +104,15 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 
 - Enter the IP shown in the first row of the ESP32 LED screen in the browser address bar.
 
-![enter_ip]()
+![enter_ip](md_pic\enter_ip.jpg)
 
-- 网页将显示一张表格和四个按钮
+- The page will display a table and four buttons.
 
-![web_page]
+![web_page](md_pic\web_page.jpg)
 
-- 表格部分是ESP32内部保存的历史数据，分别为时间，继电器状态，传感器状态。
+- The table contains historical data stored internally at ESP32, including time, relay status, and sensor status.
 
-![data_sheet]
+![data_sheet](md_pic\data_sheet.jpg)
 
 - Four buttons: Relay on, Water, Relay off, fresh.
 	- Relay on : Turn on relay.
@@ -124,20 +124,98 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 
 - Once the system is determined to be in order, the sensors can be plugged into different locations for data sampling.
 
-![different_sensor]()
-
 ## Outdoor Test
 
 - Place in the parking lot flower bed at four downstairs.
 
-![outdoor_1]()
+![outdoor_1](md_pic\outdoor_1.jpg)
 
 - Put it on the lawn about a hundred meters away.
 
-![outdoor_2]()
+![outdoor_2](md_pic\outdoor_2.jpg)
 
 ## The data analysis
 
-![1hour_data_1]()
+![1hour_data_1](E:\code\Project_IoT-Irrigation-System\md_pic\1hour_data_1.jpg)
 
-![1hour_data_2]()
+![1hour_data_2](E:\code\Project_IoT-Irrigation-System\md_pic\1hour_data_2.jpg)
+
+- Soil1 is placed in the flower pot in the office, Soil2 is placed in the parking lot below the company, and Soil0 is placed in the grass on the road about 100 meters away from the company.
+- Sometimes Soil2 messages are not received due to traffic or wall obstruction.
+- H is the air humidity, T is the air temperature, ADC is the soil humidity value, the greater the value, the drier.
+- It can be seen that the indoor temperature of Soil1 is 30 degrees Celsius, and the pot is moist with water.
+- Soil0 is placed in the roadside flower bed, although it is dry, but in the shade of the tree, the temperature is slightly lower.
+- Soil2 parking lot, slightly hotter than Soil0.Both soils are very dry.
+
+# CODE EXPLAIN
+
+## ESP32
+
+### controller.py
+
+
+- The Controller class is the parent class that abstracts the basic pin content of the Lora module.
+- Add_transceiver () adds an SX127X chip object as the send chip, because the MakePython Lora can carry two SX127X chips.
+- The remaining functions are some of the early test functions, or hardware pin preparation functions, of no concern to this experiment.
+
+### controller_esp.py
+
+- Machine module of MicroPyton is referenced to prepare SPI and GPIO initialization.
+- The Controller_esp.Controller class inherits from controller.Controller.
+- The model and SPI pins of the hardware for ESP were determined.
+- The rest of the overloaded member functions are initialized by hardware pins such as SPI.
+
+### controller_esp_lora_oled.py
+
+- controller_esp_lora_oled.Controller class inherits from the  controller_esp.Controller。
+- The Controller_ESP_lora_OLd.Controller class inherits from the Controller_esp.Controller.
+
+### ssd1306.py
+
+- Ssd1306 led screen driver.
+
+### display_ssd1306_i2c.py
+
+- Ssd1306 LED screen based on I2C basic display library.
+- Text display function.
+- Image display function.
+
+### sx127x.py
+
+- Lora module driver function.
+- Includes basic Lora module Settings such as frequency, lead code, calibration, spread spectrum factor, etc.
+
+### config_lora.py
+
+- To accommodate some configuration code for multiple platforms.
+
+### lora_node.py
+
+- Lora Gateway object.
+- Encapsulated send method and receive interrupt and other functional functions.
+
+### webserver.py
+
+- Connect the wifi.
+- Provide control pages.
+
+## Lora Relay
+
+### Lora_relay_new.ino
+
+- Relay control program, including LORA driver (RadioLib library), relay switch control.
+
+## Lora Soil Moisture Sensor
+
+### LoraTransmitterADCAHT10.ino
+
+- Soil moisture sensor control program, including LORA Drive (RadioLib Library), soil moisture detection.
+
+### I2C_AHT10.h
+
+- AHT10 air temperature and humidity sensor header file.
+
+### I2C_AHT10.cpp
+
+- AHT10 air temperature and humidity sensor driver.
+
