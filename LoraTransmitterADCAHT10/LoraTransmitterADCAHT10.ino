@@ -2,7 +2,7 @@
 #include "I2C_AHT10.h"
 #include <Wire.h>
 
-#define NODENAME "soil2"
+#define NODENAME "soil3"
 
 AHT10 humiditySensor;
 
