@@ -9,7 +9,7 @@ Note:
 */
 ```
 
-![main](md_pic\main.jpg)
+![main](md_pic/main.jpg)
 
 [toc]
 
@@ -52,11 +52,11 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 
 - Download all python programs ending in.py from the "/Project_LOT-Irrigation-System/LoraLOT/workSpace to ESP32".
 
-![program_list](md_pic\program_list.jpg)
+![program_list](md_pic/program_list.jpg)
 
 - Press the RST button on ESP32 to reset the development board.The LCD screen will display some default data.
 
-![default_data](E:\code\Project_IoT-Irrigation-System\md_pic\default_data.jpg)
+![default_data](md_pic/default_data.jpg)
 
 
 ## Burn Sensor
@@ -80,7 +80,7 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 
 - Connect the sensor and PC through "CP2104 USB2UART Module"。
 
-![connect_uart_sensor](md_pic\connect_uart_sensor.jpg)
+![connect_uart_sensor](md_pic/connect_uart_sensor.jpg)
 
 - Push Upload.
 
@@ -91,7 +91,7 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 - Open file "/Project_LOT-Irrigation-System/Lora_relay_new/Lora_relay_new.ino"
 - Connect relay and PC through "CP2104 USB2UART Module"。
 
-![connect_uart_relay](md_pic\connect_uart_relay.jpg)
+![connect_uart_relay](md_pic/connect_uart_relay.jpg)
 
 - Choice relay port.
 - Push Upload.
@@ -104,15 +104,15 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 
 - Enter the IP shown in the first row of the ESP32 LED screen in the browser address bar.
 
-![enter_ip](md_pic\enter_ip.jpg)
+![enter_ip](md_pic/enter_ip.jpg)
 
 - The page will display a table and four buttons.
 
-![web_page](md_pic\web_page.jpg)
+![web_page](md_pic/web_page.jpg)
 
 - The table contains historical data stored internally at ESP32, including time, relay status, and sensor status.
 
-![data_sheet](md_pic\data_sheet.jpg)
+![data_sheet](md_pic/data_sheet.jpg)
 
 - Four buttons: Relay on, Water, Relay off, fresh.
 	- Relay on : Turn on relay.
@@ -128,17 +128,17 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 
 - Place in the parking lot flower bed at four downstairs.
 
-![outdoor_1](md_pic\outdoor_1.jpg)
+![outdoor_1](md_pic/outdoor_1.jpg)
 
 - Put it on the lawn about a hundred meters away.
 
-![outdoor_2](md_pic\outdoor_2.jpg)
+![outdoor_2](md_pic/outdoor_2.jpg)
 
 ## The data analysis
 
-![1hour_data_1](E:\code\Project_IoT-Irrigation-System\md_pic\1hour_data_1.jpg)
+![1hour_data_1](md_pic/1hour_data_1.jpg)
 
-![1hour_data_2](E:\code\Project_IoT-Irrigation-System\md_pic\1hour_data_2.jpg)
+![1hour_data_2](md_pic/1hour_data_2.jpg)
 
 - Soil1 is placed in the flower pot in the office, Soil2 is placed in the parking lot below the company, and Soil0 is placed in the grass on the road about 100 meters away from the company.
 - Sometimes Soil2 messages are not received due to traffic or wall obstruction.
