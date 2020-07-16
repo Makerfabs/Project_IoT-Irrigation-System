@@ -8,6 +8,7 @@ Create Date:	2020/7/15
 Note:
 */
 ```
+[YOUTUBE:Lora IoT Irrigation System - Outdoor Simulation Test](https://youtu.be/0mY6Ox0YvRk)
 
 ![main](md_pic/main.jpg)
 
