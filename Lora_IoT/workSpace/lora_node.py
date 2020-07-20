@@ -74,8 +74,8 @@ class Lora_Gate:
                 self.sendMessage("PREPARE")
                 time.sleep(5)
 
-                last_node_status = {"relay":"NULL", "soil1":"NULL", "soil2": "NULL", "soil0":"NULL", "update_time":"NULL"}
-                last_node_status["update_time"] = time_str
+                last_node_status = {"Relay":"NULL", "Soil1":"NULL", "Soil2": "NULL", "Soil3":"NULL", "Update_time":"NULL"}
+                last_node_status["Update_time"] = time_str
 
                 temp_msg = "RELAY" + onoff
                 onoff = ""
@@ -84,12 +84,12 @@ class Lora_Gate:
                 self.lora_timeout()
                 self.relay_status = self.buff
                 self.buff = ""
-                last_node_status["relay"] = self.relay_status
-                if last_node_status["relay"] == "":
-                    last_node_status["relay"] = "NULL"
+                last_node_status["Relay"] = self.relay_status
+                if last_node_status["Relay"] == "":
+                    last_node_status["Relay"] = "NULL"
 
-                for i in range(3):
-                    soil_index = 'soil'+str(i)
+                for i in range(1,4):
+                    soil_index = 'Soil'+str(i)
                     self.sendMessage(soil_index)
                     self.lora.receive()
                     self.lora_timeout()
@@ -181,34 +181,35 @@ class Lora_Gate:
     def show_all_status(self,node_List):
         self.lora.show_text(self.ip)
 
-        soil0 = node_List.list[9]['soil0']
+        soil0 = node_List.list[9]['Soil1']
         if soil0 == "AHT10ERR" :
             pass
         elif soil0 != "NULL" :
             soil0 = soil0[soil0.find('ADC'):]
 
 
-        soil1 = node_List.list[9]['soil1']
+        soil1 = node_List.list[9]['Soil2']
         if soil1 == "AHT10ERR" :
             pass
         elif soil1 != "NULL" :
             soil1 = soil1[soil1.find('ADC'):]
 
 
-        soil2 = node_List.list[9]['soil2']
+        soil2 = node_List.list[9]['Soil3']
         if soil2 == "AHT10ERR" :
             pass
         elif soil2 != "NULL" :
             soil2 = soil2[soil2.find('ADC'):]
 
-        self.lora.show_text('relay:'+ node_List.list[9]['relay'],0,10,clear_first = False)
-        self.lora.show_text('soil0:'+ soil0,0,20,clear_first = False)
-        self.lora.show_text('soil1:'+ soil1,0,30,clear_first = False)
-        self.lora.show_text('soil2:'+ soil2,0,40,clear_first = False)
-        self.lora.show_text(node_List.list[9]['update_time'],0,50,clear_first = False, show_now = True, hold_seconds = 1)
+        self.lora.show_text('Relay:'+ node_List.list[9]['Relay'],0,10,clear_first = False)
+        self.lora.show_text('Soil1:'+ soil0,0,20,clear_first = False)
+        self.lora.show_text('Soil2:'+ soil1,0,30,clear_first = False)
+        self.lora.show_text('Soil3:'+ soil2,0,40,clear_first = False)
+        self.lora.show_text(node_List.list[9]['Update_time'],0,50,clear_first = False, show_now = True, hold_seconds = 1)
 
 class Lora_Node_List:
     def __init__(self):
         self.list = []
         for i in range(10):
-            self.list.append({"relay":"UNKNOW", "soil0":"1", "soil1": "2", "soil2":"3", "update_time":"16:32:00"})
+            self.list.append({"Relay":"default", "Soil1":"default", "Soil2": "default", "Soil3":"default", "Update_time":"00:00:00"})
+

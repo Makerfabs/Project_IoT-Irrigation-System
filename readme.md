@@ -2,10 +2,11 @@
 
 ```c++
 /*
-Version:		V1.0
+Version:		V1.1
 Author:			Vincent
 Create Date:	2020/7/15
 Note:
+2020/7/20 V1.1:Optimized the web page and modified the name of the sensor.Without change the picture.
 */
 ```
 [YOUTUBE:Lora IoT Irrigation System - Outdoor Simulation Test](https://youtu.be/0mY6Ox0YvRk)
@@ -69,10 +70,10 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 ![radio_lib](md_pic/radio_lib.jpg)
 
 - If youer ardino ide version is old,maybe can't auto install dependent libraries. You may manual install or upgrade arduino ide, such as 1.8.13.
-- Change NODECODE to either soil0, soil1, or soil2.
+- Change NODECODE to either Soil1, Soil2, or Soil3.
 
 ```c++
-#define NODENAME "soil3" //soil0, soil1, or soil2.
+#define NODENAME "Soil3"
 ```
 
 - After saving, select "Tools", select "Development Board" Arduino Pro or Pro min, select processor ATmega328p 3.3V 8MHz, and select corresponding serial port.

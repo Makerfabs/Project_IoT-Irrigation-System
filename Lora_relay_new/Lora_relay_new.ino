@@ -3,6 +3,8 @@
 #define LORA_RELAY_PIN 4
 #define LORA_RELAY_STATUS_PIN 5
 
+#define NODENAME "RELAY"
+
 const int DIO0 = 2;
 const int DIO1 = 6;
 const int DIO2 = 7;
@@ -79,7 +81,7 @@ void loop()
         Serial.print(F("[SX1278] Frequency error:\t"));
         Serial.print(radio.getFrequencyError());
         Serial.println(F(" Hz"));
-        if (str.startsWith("RELAY"))
+        if (str.startsWith(NODENAME))
         {
             String message = "???";
             switch (relay_state)

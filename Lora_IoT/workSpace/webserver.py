@@ -20,33 +20,38 @@ led = Pin(5, Pin.OUT)
 ip = "ip get wrong"
 
 def web_page(msg):
-  table_str = """<table border="1"><tr><th>update_time</th><th>relay</th><th style="color:green">soil0</th><th style="color:green">soil1</th><th style="color:green">soil2</th></tr>"""
+  table_str = """<tr><th>Update_time</th><th>Relay</th><th style="color:green">Soil1</th><th style="color:green">Soil2</th><th style="color:green">Soil3</th></tr>"""
   for i in range(10):
-    table_str += "<tr><th>" + msg[i]['update_time'] + "</th><th>" + msg[i]['relay'] + """</th><th style="color:green">""" + msg[i]['soil0'] + """</th><th style="color:green">""" + msg[i]['soil1'] + """</th><th style="color:green">""" + msg[i]['soil2'] + "</th></tr>"
+    table_str += "<tr><th>" + msg[i]['Update_time'] + "</th><th>" + msg[i]['Relay'] + """</th><th style="color:green">""" + msg[i]['Soil1'] + """</th><th style="color:green">""" + msg[i]['Soil2'] + """</th><th style="color:green">""" + msg[i]['Soil3'] + "</th></tr>"
   table_str += """</table>"""
 
   html ="""
-  <html>
-    <head><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="refresh" content="600"/></head>
-    <body>
-      <img src="https://makerfabs.com/image/cache/logo11-190x63.png" />
-      <h1>Lora IoT Irrigation System</h1>
-      <h2>Sensors status:</h2>
-      """ + table_str + """
-      <a href=\"?led=on\">
-        <button style="background-color: #7ED321">RELAY ON</button>
-      </a>
-      <a href=\"?led=water\">
-        <button style="background-color: #7ED321">WATER</button>
-      </a>
-      <a href=\"?led=off\">
-        <button style="background-color: #FFFFFF">RELAY OFF</button>
-      </a>
-      <a href=\"?led=donothing\">
-        <button style="background-color: #FFFFFF">Fresh</button>
-      </a>
-    </body>
-  </html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="600" />
+</head>
+
+<body>
+    <div id="content" style="text-align:center;background-color:#EEEEEE;height:150px;width:800px;float:center;">
+        <img src="https://makerfabs.com/image/cache/logo11-190x63.png" />
+        <h1>Lora IoT Irrigation System</h1>
+    </div>
+    <div id="menu" style="text-align:center;background-color:#FFD700;height:50px;width:800px;float:center;">
+        <form method="get">
+            <button name="led" type="submit" value="water">Water 10 Second</button>
+            <button name="led" type="submit" value="off">Relay OFF</button>
+            <button name="led" type="submit" value="donothing">Refresh Data</button>
+        </form>
+    </div>
+    <table border="1" align="left" style="background-color: #00dbebcc;width:800;">
+        <caption>Sensors status</caption>
+""" + table_str + """
+    </table>
+</body>
+
+</html>
   """
   return html
 
@@ -82,4 +87,8 @@ def connect():
 
 
 
-
+"""
+      <a href=\"?led=on\">
+        <button style="background-color: #7ED321">RELAY ON</button>
+      </a>
+"""

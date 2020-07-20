@@ -2,7 +2,7 @@
 #include "I2C_AHT10.h"
 #include <Wire.h>
 
-#define NODENAME "soil3"
+#define NODENAME "Soil3"
 
 AHT10 humiditySensor;
 
@@ -35,6 +35,7 @@ void setup()
     SPI.begin();
 
     // initialize SX1278 with default settings
+    Serial.println(String("Sensor name is :") + String(NODENAME));
     Serial.print(F("[SX1278] Initializing ... "));
     int state = radio.begin();
     if (state == ERR_NONE)
