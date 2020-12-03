@@ -7,6 +7,7 @@ Author:			Vincent
 Create Date:	2020/7/15
 Note:
 2020/7/20 V1.1:Optimized the web page and modified the name of the sensor.Without change the picture.
+2020/12/3 V2.0:A new version with a standby current of only 672ua has been added.And upload ThingSpeak.
 */
 ```
 [YOUTUBE:Lora IoT Irrigation System - Outdoor Simulation Test](https://youtu.be/0mY6Ox0YvRk)
@@ -221,3 +222,16 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 
 - AHT10 air temperature and humidity sensor driver.
 
+
+
+# Lora Low Power
+
+In previous tests, the sensor had been in working mode, causing both batteries to die overnight. This time, by putting Arduino to sleep, I started it with a watchdog. And when not working, the Lora module will sleep and ADC detection will be disabled. The standby power consumption is only 0.672 mA.
+
+This version is independent of the project and uploads the data to the ThingSpeaker.You can go to the link for real-time status.
+
+[Makerfabs Lora Battery Test](https://thingspeak.com/channels/1243124)
+
+Starting at 2020-11-27 02:29:22 UTC.
+
+![thingspeak](md_pic/thingspeak.jpg)
