@@ -2,12 +2,13 @@
 
 ```c++
 /*
-Version:		V1.1
+Version:		V3.0
 Author:			Vincent
 Create Date:	2020/7/15
 Note:
-2020/7/20 V1.1:Optimized the web page and modified the name of the sensor.Without change the picture.
-2020/12/3 V2.0:A new version with a standby current of only 672ua has been added.And upload ThingSpeak.
+2020/7/20 	V1.1:Optimized the web page and modified the name of the sensor.Without change the picture.
+2020/12/3 	V2.0:A new version with a standby current of only 672ua has been added.And upload ThingSpeak.
+2021/11/20	V3.0:Delete useless code, supply Lora Soil Moisture V3.
 */
 ```
 [YOUTUBE:Lora IoT Irrigation System - Outdoor Simulation Test](https://youtu.be/0mY6Ox0YvRk)
@@ -53,18 +54,20 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 
 ![burn_firmware](md_pic/burn_firmware.png)
 
-- Download all python programs ending in.py from the "/Project_LOT-Irrigation-System/LoraLOT/workSpace to ESP32".
+- Download all python programs ending in.py from the "\Project_IoT-Irrigation-System\iot_makepython\workSpace" to ESP32.
 
 ![program_list](md_pic/program_list.jpg)
 
-- Press the RST button on ESP32 to reset the development board.The LCD screen will display some default data.
+- Set test.py to default run. (Go to the program on ESP32 in the Device folder and right-click to set it to start by default.)
+
+- Press the RST button on ESP32 to reset the development board. The LCD screen will display some default data.
 
 ![default_data](md_pic/default_data.jpg)
 
 
 ## Burn Sensor
 - Open arduino ide.
-- Open file "/Project_LOT-Irrigation-System/LoraTransmitterADCAHT10/LoraTransmitterADCAHT10.ino"
+- Open file "\Project_IoT-Irrigation-System\iot_moisture_V3\iot_moisture_V3.ino"
 - Select Tools/Manage Libraries.
 - Install RadioLib by Jan Gromes.
 
@@ -74,7 +77,7 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 - Change NODECODE to either Soil1, Soil2, or Soil3.
 
 ```c++
-#define NODENAME "Soil3"
+#define NODENAME "Soil1"
 ```
 
 - After saving, select "Tools", select "Development Board" Arduino Pro or Pro min, select processor ATmega328p 3.3V 8MHz, and select corresponding serial port.
@@ -91,7 +94,7 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 
 ## Burn Relay
 
-- Open file "/Project_LOT-Irrigation-System/Lora_relay_new/Lora_relay_new.ino"
+- Open file "\Project_IoT-Irrigation-System\iot_relay\iot_relay.ino"
 - Connect relay and PC through "CP2104 USB2UART Module"。
 
 ![connect_uart_relay](md_pic/connect_uart_relay.jpg)
@@ -221,17 +224,3 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 ### I2C_AHT10.cpp
 
 - AHT10 air temperature and humidity sensor driver.
-
-
-
-# Lora Low Power
-
-In previous tests, the sensor had been in working mode, causing both batteries to die overnight. This time, by putting Arduino to sleep, I started it with a watchdog. And when not working, the Lora module will sleep and ADC detection will be disabled. The standby power consumption is only 0.672 mA.
-
-This version is independent of the project and uploads the data to the ThingSpeaker.You can go to the link for real-time status.
-
-[Makerfabs Lora Battery Test](https://thingspeak.com/channels/1243124)
-
-Starting at 2020-11-27 02:29:22 UTC.
-
-![thingspeak](md_pic/thingspeak.jpg)

@@ -4,40 +4,41 @@
 
 #define NODENAME "Soil2"
 
+#define DIO0 2
+#define DIO1 6
+#define DIO2 7
+#define DIO5 8
+
+#define LORA_RST 4
+#define LORA_CS 10
+
+#define SPI_MOSI 11
+#define SPI_MISO 12
+#define SPI_SCK 13
+
+#define FREQUENCY 915.0
+#define BANDWIDTH 125.0
+#define SPREADING_FACTOR 9
+#define CODING_RATE 7
+#define OUTPUT_POWER 10
+#define PREAMBLE_LEN 8
+#define GAIN 0
+
+SX1276 radio = new Module(LORA_CS, DIO0, LORA_RST, DIO1);
+
 AHT10 humiditySensor;
-
-const int DIO0 = 2;
-const int DIO1 = 6;
-const int DIO2 = 7;
-const int DIO5 = 8;
-
-const int LORA_RST = 4;
-const int LORA_CS = 10;
-
-const int SPI_MOSI = 11;
-const int SPI_MISO = 12;
-const int SPI_SCK = 13;
-
 int sensorPin = A2; // select the input pin for the potentiometer
 int sensorPowerCtrlPin = 5;
-
-//SX1278 radio = new Module(LORA_CS, DIO0, LORA_RST, SPI, SPISettings());
-SX1278 radio = new Module(LORA_CS, DIO0, LORA_RST, DIO1, SPI, SPISettings());
-//SX1278 radio = new Module(LORA_CS, DIO0, LORA_RST,DIO1);
-
-// or using RadioShield
-// https://github.com/jgromes/RadioShield
-//SX1278 radio = RadioShield.ModuleA;
 
 void setup()
 {
     Serial.begin(115200);
-    SPI.begin();
 
     // initialize SX1278 with default settings
-    Serial.println(String("Sensor name is :") + String(NODENAME));
-    Serial.print(F("[SX1278] Initializing ... "));
-    int state = radio.begin();
+    Serial.print(F("Initializing ... "));
+
+    //int state = radio.begin();
+    int state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SX127X_SYNC_WORD, OUTPUT_POWER, PREAMBLE_LEN, GAIN);
     if (state == ERR_NONE)
     {
         Serial.println(F("success!"));
@@ -49,6 +50,7 @@ void setup()
         while (true)
             ;
     }
+    Serial.print(F("Waiting for incoming transmission ... "));
 
     pinMode(sensorPowerCtrlPin, OUTPUT);
     digitalWrite(sensorPowerCtrlPin, HIGH); //Sensor power on

@@ -173,7 +173,7 @@ class Lora_Gate:
         print("wait lora callback")
         now = config_lora.millisecond()
         while(self.flag == 0):
-            if config_lora.millisecond() - now > 5000:
+            if config_lora.millisecond() - now > 2000:
                 print("Callback time out.")
                 break
         self.flag = 0

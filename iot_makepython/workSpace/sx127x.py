@@ -1,4 +1,3 @@
-
 from time import sleep 
 import gc
 import config_lora
@@ -78,8 +77,8 @@ class SX127x:
     
     def __init__(self,
                  name = 'SX127x',
-                 parameters = {'frequency': 433E6, 'tx_power_level': 2, 'signal_bandwidth': 125E3, #125E3
-                               'spreading_factor': 7, 'coding_rate': 8, 'preamble_length': 8, 
+                 parameters = {'frequency': 915E6, 'tx_power_level': 2, 'signal_bandwidth': 125E3, #125E3
+                               'spreading_factor': 9, 'coding_rate': 7, 'preamble_length': 8, 
                                'implicitHeader': True, 'sync_word': 0x12, 'enable_CRC': True},
                  onReceive = None):
                  
@@ -104,7 +103,7 @@ class SX127x:
         
         
         # config
-        self.setFrequency(self.parameters['frequency']) 
+        self.setFrequency(self.parameters['frequency'])
         self.setSignalBandwidth(self.parameters['signal_bandwidth'])
 
         # set LNA boost
@@ -124,8 +123,9 @@ class SX127x:
         
         # set LowDataRateOptimize flag if symbol time > 16ms (default disable on reset)
         # self.writeRegister(REG_MODEM_CONFIG_3, self.readRegister(REG_MODEM_CONFIG_3) & 0xF7)  # default disable on reset
-        if 1000 / (self.parameters['signal_bandwidth'] / 2**self.parameters['spreading_factor']) > 16:
-            self.writeRegister(REG_MODEM_CONFIG_3, self.readRegister(REG_MODEM_CONFIG_3) | 0x08)
+        
+        #if 1000 / (self.parameters['signal_bandwidth'] / 2**self.parameters['spreading_factor']) > 16:
+        #    self.writeRegister(REG_MODEM_CONFIG_3, self.readRegister(REG_MODEM_CONFIG_3) | 0x08)
         
         # set base addresses
         self.writeRegister(REG_FIFO_TX_BASE_ADDR, FifoTxBaseAddr)
@@ -186,6 +186,11 @@ class SX127x:
         self.aquire_lock(True)  # wait until RX_Done, lock and begin writing.
         
         self.beginPacket(implicitHeader) 
+        #用radiohead那个库需要这个东西
+        #b1 = bytes(b'\xff\xff\x00\x00')
+        #b2 = bytes(b'\x00')
+        #self.write(b1 + string.encode() + b2)
+
         self.write(string.encode())
         self.endPacket()  
 
@@ -336,7 +341,7 @@ class SX127x:
                 payload = self.read_payload()                
                 self.aquire_lock(False)     # unlock when done reading  
                 
-                self._onReceive(self, payload)
+                self._onReceive(payload)
                 
         self.aquire_lock(False)             # unlock in any case.
         
@@ -393,6 +398,12 @@ class SX127x:
         if config_lora.IS_MICROPYTHON:
             print('[Memory - free: {}   allocated: {}]'.format(gc.mem_free(), gc.mem_alloc()))
             
+
+
+
+
+
+
 
 
 
