@@ -23,7 +23,7 @@ Note:
 
 [Makerfabs home page](https://www.makerfabs.com/)
 
-[Makerfabs Wiki](https://makerfabs.com/wiki/index.php?title=Main_Page)
+[Makerfabs Wiki](https://wiki.makerfabs.com/)
 
 Using ESP32 as a gateway, three soil sensors and a relay were controlled to form a simple Iot agriculture greenhouse simulation project.Ambient weather data, soil moisture data and relay status can be accessed via LCD screen and web page.And through a simple web page or code to control the timing of the relay switch and read data.
 
@@ -31,9 +31,9 @@ Using ESP32 as a gateway, three soil sensors and a relay were controlled to form
 
 ## Equipment list
 
-- [MakePython ESP32](https://www.makerfabs.com/wiki/index.php?title=MakePython_ESP32)
-- [MakaPython Lora](https://www.makerfabs.com/wiki/index.php?title=MakaPython_Lora)
--  [Lora Relay](https://www.makerfabs.com/wiki/index.php?title=Lora_Relay)
+- [MakePython ESP32](https://wiki.makerfabs.com/MaESP_ESP32.html)
+- [MakaPython Lora](https://wiki.makerfabs.com/MaESP_ESP32_Lora_Gateway.html)
+-  [Lora Relay](https://wiki.makerfabs.com/Lora_Relay.html)
 -  [Lora Soil Moisture Sensor](https://www.makerfabs.com/wiki/index.php？title=Lora_Soil_Moisture_Sensor)
 -  CP2104 USB2UART Module
 
